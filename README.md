@@ -30,10 +30,16 @@ git checkout develop
 git pull origin develop
 ```
 
-#### 새로운 기능 작업하기
+#### 팀원별 브랜치로 작업하기
+각 팀원은 본인 브랜치에서 작업하세요:
+- **권기혁**: `feature/권기혁`
+- **손지민**: `feature/손지민` 
+- **윤세희**: `feature/윤세희`
+- **phs**: `feature/phs`
+
 ```bash
-# 새로운 브랜치 만들기 (브랜치명은 기능에 맞게 변경)
-git checkout -b feature/센서-데이터-수집
+# 본인 브랜치로 이동 (예: 권기혁의 경우)
+git checkout feature/권기혁
 
 # 작업 후 변경사항 확인
 git status
@@ -44,8 +50,8 @@ git add .
 # 커밋 (메시지는 한글로 명확하게)
 git commit -m "센서 데이터 수집 기능 추가"
 
-# GitHub에 올리기
-git push origin feature/센서-데이터-수집
+# GitHub에 올리기 (본인 브랜치명으로 변경)
+git push origin feature/권기혁
 ```
 
 ### 3️⃣ 코드 합치기 (Pull Request)
