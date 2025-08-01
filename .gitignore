@@ -1,0 +1,1 @@
+*.elf\n*.hex\n*.bin\n*.eep\n*.map\n*.d\n*.o\n*.bak\n*.tmp\n.DS_Store\nThumbs.db\n.vscode/
