@@ -233,7 +233,24 @@ void loop() {
 - **C/C++ (Microsoft)** - C/C++ 개발 지원
 - **PlatformIO IDE** - 임베디드 개발용
 
-## 📞 도움이 필요할 때
+## � 자주 발생하는 문제 해결
+
+### "Arduino.h를 찾을 수 없습니다" 오류
+1. **PlatformIO IDE 확장 설치 확인**
+   - VS Code에서 `Ctrl+Shift+X` → "PlatformIO IDE" 검색 후 설치
+2. **VS Code 재시작**: 확장 설치 후 완전히 재시작
+3. **프로젝트 열기**: `redsensor.code-workspace` 파일로 워크스페이스 열기
+4. **PlatformIO: Build** 실행하여 라이브러리 설치
+
+### 업로드 포트 오류
+```ini
+; platformio.ini에 본인의 포트 추가
+upload_port = COM3  ; Windows
+; upload_port = /dev/ttyUSB0  ; Linux
+; upload_port = /dev/cu.usbmodem*  ; macOS
+```
+
+## �📞 도움이 필요할 때
 - GitHub Issues에 질문 올리기
 - 팀 채팅방에서 질문하기
 - 이 README 파일을 자주 참고하세요!
