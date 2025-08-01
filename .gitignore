@@ -1,1 +1,23 @@
-*.elf\n*.hex\n*.bin\n*.eep\n*.map\n*.d\n*.o\n*.bak\n*.tmp\n.DS_Store\nThumbs.db\n.vscode/
+# PlatformIO
+.pio/
+.vscode/
+lib/README
+
+# 컴파일된 파일들
+*.elf
+*.hex
+*.bin
+*.eep
+*.map
+*.d
+*.o
+*.bak
+*.tmp
+
+# 시스템 파일들
+.DS_Store
+Thumbs.db
+
+# IDE 설정 파일들
+.vscode/settings.json
+.vscode/launch.json
