@@ -1,0 +1,19 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "extensions": {
+        "recommendations": [
+            "platformio.platformio-ide",
+            "ms-vscode.cpptools",
+            "eamodio.gitlens"
+        ]
+    },
+    "settings": {
+        "terminal.integrated.env.windows": {
+            "PATH": "${env:PATH};${env:USERPROFILE}\\.platformio\\penv\\Scripts"
+        }
+    }
+}
