@@ -10,7 +10,28 @@ tcs34725 센서를 활용하여 색상을 감지하는 프로젝트입니다.
 #### Git 설치 및 설정
  Git 사용자 정보 설정 (각자 본인 정보로 변경)
 ```bash
-git config --global user.name "본인이름"
+git conf## 🛠️ 개발 환경 설정
+
+### 필요한 도구들
+- **Git** - 버전 관리
+- **VS Code** - 코드 에디터 (추천)
+- **PlatformIO** - 아두이노 개발 환경 (Arduino IDE보다 추천)
+
+### VS Code 확장 프로그램 추천
+- **PlatformIO IDE** - 아두이노/임베디드 개발의 필수 도구
+- **GitLens** - Git 히스토리와 정보를 시각적으로 표시
+- **GitHub Pull Requests** - VS Code에서 직접 PR 관리
+- **C/C++** - C/C++ 개발 지원 (PlatformIO가 자동 설치)
+
+### 하드웨어 연결 (TCS34725)
+```
+TCS34725    Arduino Uno
+VCC    ──→  3.3V
+GND    ──→  GND
+SCL    ──→  A5
+SDA    ──→  A4
+LED    ──→  Digital Pin (선택사항)
+```user.name "본인이름"
 git config --global user.email "본인이메일@gmail.com"
 ```
 
@@ -112,12 +133,67 @@ git pull origin develop
 ### 📁 프로젝트 구조
 ```
 redsensor/
-├── src/            # 소스 코드
-├── include/        # 헤더 파일
-├── docs/           # 문서
-├── tests/          # 테스트 코드
-├── .gitignore      # Git이 무시할 파일들
-└── README.md       # 이 파일
+├── src/                    # 아두이노 소스 코드 (.ino, .cpp, .h)
+│   ├── main.cpp           # 메인 아두이노 코드
+│   ├── tcs34725_sensor.h  # TCS34725 센서 헤더
+│   └── tcs34725_sensor.cpp # TCS34725 센서 구현
+├── lib/                   # 사용자 정의 라이브러리
+├── platformio.ini         # PlatformIO 설정 파일
+├── .gitignore            # Git이 무시할 파일들
+└── README.md             # 이 파일
+```
+
+## 🔧 아두이노 개발 환경 설정
+
+### PlatformIO 사용하기 (추천)
+1. **VS Code에서 PlatformIO IDE 확장 설치**
+2. **새 프로젝트 생성**: `Ctrl+Shift+P` → "PlatformIO: New Project"
+3. **보드 선택**: Arduino Uno, ESP32 등 사용할 보드 선택
+4. **프레임워크**: Arduino 선택
+
+### 필요한 라이브러리 (TCS34725 프로젝트용)
+```ini
+; platformio.ini 파일에 추가
+[env:uno]
+platform = atmelavr
+board = uno
+framework = arduino
+lib_deps = 
+    adafruit/Adafruit TCS34725@^1.4.4
+    adafruit/Adafruit BusIO@^1.14.1
+```
+
+### TCS34725 기본 코드 예시
+```cpp
+// src/main.cpp
+#include <Arduino.h>
+#include <Wire.h>
+#include "Adafruit_TCS34725.h"
+
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
+
+void setup() {
+  Serial.begin(9600);
+  
+  if (tcs.begin()) {
+    Serial.println("TCS34725 센서를 찾았습니다!");
+  } else {
+    Serial.println("TCS34725 센서를 찾을 수 없습니다... 연결을 확인하세요");
+    while (1);
+  }
+}
+
+void loop() {
+  uint16_t r, g, b, c;
+  tcs.getRawData(&r, &g, &b, &c);
+  
+  Serial.print("R: "); Serial.print(r);
+  Serial.print(" G: "); Serial.print(g);
+  Serial.print(" B: "); Serial.print(b);
+  Serial.print(" C: "); Serial.println(c);
+  
+  delay(1000);
+}
 ```
 
 ### �️ VS Code에서 GUI로 Git 사용하기 (명령어 없이!)
