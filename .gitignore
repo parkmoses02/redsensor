@@ -3,6 +3,23 @@
 .vscode/
 lib/README
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# 데이터 파일들 (개인 실험 데이터는 공유하지 않음)
+data/*.csv
+data/*.png
+!data/.gitkeep
+
 # 컴파일된 파일들
 *.elf
 *.hex
