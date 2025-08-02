@@ -12,7 +12,152 @@ tcs34725 센서를 활용하여 색상을 감지하는 프로젝트입니다.
 - **Local(로컬)**: 내 컴퓨터에 있는 프로젝트 복사본
 - **Remote(원격)**: GitHub 서버에 있는 원본 프로젝트
 
-#### 주요 Git 명령어
+##### 📊 Python을 이용한 센서 데이터 수집
+
+### 🎯 개요
+아두이노에서 시리얼로 전송되는 TCS34725 센서 데이터를 파이썬으로 받아서 CSV 파일로 저장하는 방법입니다.
+
+### 📋 필요한 라이브러리 설치
+```bash
+pip install pyserial pandas matplotlib
+```
+
+### 📂 프로젝트 구조
+```
+redsensor/
+├── src/main.cpp           # 아두이노 센서 코드
+├── data_logger.py         # 데이터 수집 스크립트
+├── data_analyzer.py       # 데이터 분석 스크립트
+├── quick_collect.py       # 빠른 데이터 수집
+└── data/                  # CSV 파일 저장 폴더
+    ├── sensor_data_YYYYMMDD_HHMMSS.csv
+    └── sensor_data_YYYYMMDD_HHMMSS_analysis.png
+```
+
+### 🚀 사용 방법
+
+#### 1️⃣ 아두이노 업로드
+```bash
+# PlatformIO 사용
+platformio run --target upload
+
+# 또는 VS Code에서 Ctrl+Shift+P → "PlatformIO: Upload"
+```
+
+#### 2️⃣ 데이터 수집하기
+
+##### 방법 1: 대화형 메뉴 사용
+```bash
+python data_logger.py
+```
+메뉴가 나타나면:
+- `1`: 60초 동안 수집
+- `2`: 사용자 정의 시간 (초 단위)
+- `3`: 무한 수집 (Ctrl+C로 중지)
+
+##### 방법 2: 빠른 수집 (30초)
+```bash
+python quick_collect.py
+```
+
+##### 방법 3: 코드에서 직접 호출
+```python
+from data_logger import collect_sensor_data
+
+# 30초 동안 수집
+collect_sensor_data(duration=30)
+
+# 무한 수집 (Ctrl+C로 중지)
+collect_sensor_data(duration=0)
+
+# 다른 포트 사용
+collect_sensor_data(port='COM4', duration=60)
+```
+
+#### 3️⃣ 데이터 분석하기
+```bash
+python data_analyzer.py
+```
+메뉴에서:
+- `1`: 최신 데이터 자동 분석
+- `2`: 특정 파일 선택해서 분석
+- `3`: 저장된 파일 목록 보기
+
+### 📊 CSV 파일 형식
+```csv
+R,G,B,Clear,Lux,Color_Temp_K
+73,92,81,2853,707,7224
+73,92,81,2854,707,7218
+```
+
+**컬럼 설명:**
+- `R, G, B`: RGB 색상 값 (0-255)
+- `Clear`: 투명도/밝기 원시 값
+- `Lux`: 조도 (밝기)
+- `Color_Temp_K`: 색온도 (켈빈)
+
+### 🔧 포트 설정 변경
+Windows가 아닌 경우 포트를 변경해야 할 수 있습니다:
+
+```python
+# data_logger.py의 기본 포트 변경
+collect_sensor_data(port='COM3')      # Windows
+collect_sensor_data(port='/dev/ttyUSB0')   # Linux
+collect_sensor_data(port='/dev/cu.usbmodem*')  # macOS
+```
+
+### 📈 분석 결과
+데이터 분석 시 다음과 같은 결과를 얻을 수 있습니다:
+
+1. **기본 통계**: 평균, 최소값, 최대값, 표준편차
+2. **시각화 그래프**:
+   - RGB 값 변화
+   - Clear 값 변화
+   - 조도(Lux) 변화
+   - 색온도 변화
+   - RGB 히스토그램
+   - RGB 색상 공간
+3. **색상 분석**: 주요 감지 색상과 안정성 평가
+
+### 🚨 문제 해결
+
+#### "포트를 열 수 없습니다" 오류
+```
+PermissionError: could not open port 'COM3'
+```
+**해결방법:**
+1. 다른 프로그램(Arduino IDE, PlatformIO 모니터)에서 같은 포트를 사용 중인지 확인
+2. 모든 시리얼 모니터 종료 후 다시 시도
+3. 아두이노 연결 상태 확인
+
+#### 데이터가 저장되지 않는 문제
+**확인사항:**
+1. 아두이노에서 데이터가 전송되고 있는지 확인
+2. 시리얼 포트 번호가 올바른지 확인 (장치 관리자에서 확인)
+3. 보드레이트가 9600으로 맞는지 확인
+
+#### 한글 폰트 경고
+분석 그래프에서 한글이 깨져 보일 수 있지만, 그래프 기능에는 문제없습니다.
+
+### 💡 팁
+
+1. **실시간 모니터링**: 데이터 수집 중에는 터미널에서 실시간으로 센서 값을 확인할 수 있습니다.
+
+2. **파일명 자동 생성**: CSV 파일은 `sensor_data_YYYYMMDD_HHMMSS.csv` 형식으로 자동 생성되어 언제 수집했는지 알 수 있습니다.
+
+3. **백그라운드 수집**: 긴 시간 수집할 때는 다른 작업을 하면서 수집이 가능합니다.
+
+4. **Excel 연동**: 생성된 CSV 파일은 Excel이나 Google Sheets에서 바로 열어 볼 수 있습니다.
+
+---
+
+## 📞 도움이 필요할 때
+- GitHub Issues에 질문 올리기
+- 팀 채팅방에서 질문하기
+- 이 README 파일을 자주 참고하세요!
+
+---
+**💡 Tip**: 이 README 파일에 없는 내용이나 더 자세한 설명이 필요하면 언제든 질문하세요!t 명령어
 - **📥 Clone(클론)**: GitHub의 프로젝트를 내 컴퓨터로 복사해오기
 - **📤 Push(푸시)**: 내 컴퓨터의 변경사항을 GitHub로 업로드하기
 - **📥 Pull(풀)**: GitHub의 최신 변경사항을 내 컴퓨터로 다운로드하기
