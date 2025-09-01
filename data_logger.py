@@ -4,13 +4,13 @@ import datetime
 import time
 import os
 
-def collect_sensor_data(port='COM3', baudrate=9600, duration=60, filename=None):
+def collect_sensor_data(port='COM3', baudrate=115200, duration=60, filename=None):
     """
     아두이노에서 센서 데이터를 수집하여 CSV 파일로 저장
     
     Args:
         port (str): 시리얼 포트 (기본값: COM3)
-        baudrate (int): 보드레이트 (기본값: 9600)
+        baudrate (int): 보드레이트 (기본값: 115200)
         duration (int): 수집 시간(초) (기본값: 60초, 0이면 무한히 수집)
         filename (str): 저장할 파일명 (기본값: 현재 시간 기준 자동 생성)
     """
