@@ -58,7 +58,7 @@ python data_logger.py
 ##### 방법 2: 빠른 수집 (30초)
 ```bash
 python quick_collect.py
-```
+```ddddd
 
 ##### 방법 3: 코드에서 직접 호출
 ```python
