@@ -37,7 +37,7 @@ git add .
 
 # 커밋 (의미있는 메시지 작성)
 git commit -m "기능: 구체적인 변경 내용 설명"
-
+ddd
 # 원격 저장소에 푸시
 git push origin feature/본인이름
 ```
