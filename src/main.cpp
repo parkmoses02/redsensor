@@ -8,6 +8,8 @@ void setup() {
   Serial.begin(115200); // 통신 속도를 115200으로 변경
   //hi
   int a=0;
+  int b=0;
+  int c=0; 
   if (tcs.begin()) {
     Serial.println("Sensor found. Starting data transmission...");
     // 파이썬 스크립트에서 헤더를 처리하므로 여기서는 삭제합니다.
