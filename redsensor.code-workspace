@@ -1,23 +1,10 @@
 {
-  "folders": [
-    {
-      "path": "."
-    }
-  ],
-  "settings": {
-    "files.associations": {
-      "*.ino": "cpp"
-    },
-    "C_Cpp.default.includePath": [
-      "${workspaceFolder}/include",
-      "${workspaceFolder}/.pio/libdeps/*/"
-    ]
-  },
-  "extensions": {
-    "recommendations": [
-      "ms-vscode.cpptools",
-      "platformio.platformio-ide",
-      "ms-python.python"
-    ]
-  }
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
 }
