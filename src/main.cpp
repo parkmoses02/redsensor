@@ -56,6 +56,42 @@ void rgbToLab(uint8_t r, uint8_t g, uint8_t b, float &L, float &a, float &B) {
   xyzToLab(x, y, z, L, a, B);
 }
 
+// LAB 값으로부터 색상 이름 판별
+String getColorName(float L, float a, float b) {
+  // 매우 어두운 색 (검은색)
+  if (L < 20) return "Black";
+  
+  // 매우 밝은 색 (흰색)
+  if (L > 85 && abs(a) < 10 && abs(b) < 10) return "White";
+  
+  // 회색 (채도가 낮음)
+  if (abs(a) < 15 && abs(b) < 15) {
+    if (L > 70) return "Light Gray";
+    else if (L > 40) return "Gray";
+    else return "Dark Gray";
+  }
+  
+  // 색상 판별 (a*, b* 값 기반)
+  float chroma = sqrt(a*a + b*b);
+  float hue = atan2(b, a) * 180 / PI;
+  if (hue < 0) hue += 360;
+  
+  // 채도가 너무 낮으면 회색계열
+  if (chroma < 20) {
+    return "Grayish";
+  }
+  
+  // 색상 구간별 판별
+  if (hue >= 0 && hue < 30) return "Red";
+  else if (hue >= 30 && hue < 60) return "Orange";
+  else if (hue >= 60 && hue < 120) return "Yellow";
+  else if (hue >= 120 && hue < 180) return "Green";
+  else if (hue >= 180 && hue < 240) return "Cyan";
+  else if (hue >= 240 && hue < 300) return "Blue";
+  else if (hue >= 300 && hue < 330) return "Magenta";
+  else return "Red";
+}
+
 void setup() {
   Serial.begin(9600);
   
@@ -84,6 +120,9 @@ void loop() {
   // RGB를 LAB로 변환
   rgbToLab(red, green, blue, L, a, B);
   
+  // 색상 이름 판별
+  String colorName = getColorName(L, a, B);
+  
   Serial.print("RGB: (");
   Serial.print(red); Serial.print(", ");
   Serial.print(green); Serial.print(", ");
@@ -93,6 +132,9 @@ void loop() {
   Serial.print(L, 2); Serial.print(", a=");
   Serial.print(a, 2); Serial.print(", b=");
   Serial.print(B, 2); Serial.println(")");
+  
+  Serial.print("Color: ");
+  Serial.println(colorName);
   Serial.println("----------------------------------------");
   
   delay(1000);
