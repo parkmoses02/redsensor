@@ -22,7 +22,7 @@ git pull origin develop
 git checkout feature/본인이름
 
 # 4. develop의 최신 코드를 본인 브랜치에 병합
-git merge develop
+
 ```
 
 ### 2️⃣ 개발 작업하기

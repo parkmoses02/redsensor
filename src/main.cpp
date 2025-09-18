@@ -9,7 +9,8 @@ void setup() {
   //hi
   int a=0;
   int b=0;
-  int c=0; 
+  int c=0;
+  //오늘 할일
   if (tcs.begin()) {
     Serial.println("Sensor found. Starting data transmission...");
     // 파이썬 스크립트에서 헤더를 처리하므로 여기서는 삭제합니다.
