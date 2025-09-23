@@ -4,7 +4,7 @@ import datetime
 import time
 import os
 
-def collect_sensor_data(port='COM3', baudrate=115200, duration=60, filename=None):
+def collect_sensor_data(port='COM5', baudrate=9600, duration=30, filename=None):
     """
     아두이노에서 센서 데이터를 수집하여 CSV 파일로 저장
     
@@ -126,5 +126,5 @@ if __name__ == "__main__":
     elif choice == "3":
         collect_sensor_data(duration=0)
     else:
-        print("기본값으로 60초 수집을 시작합니다.")
-        collect_sensor_data(duration=60)
+        print("기본값으로 30초 수집을 시작합니다.")
+        collect_sensor_data(duration=30)
