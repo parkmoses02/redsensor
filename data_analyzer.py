@@ -94,7 +94,7 @@ def analyze_sensor_data(filename=None):
         # RGB 3D 색상 공간 (간단한 2D 표현)
         if 'R' in df.columns and 'G' in df.columns and 'B' in df.columns:
             scatter = axes[1, 2].scatter(df['R'], df['G'], c=df['B'], 
-                                       cmap='viridis', alpha=0.6)
+                                    cmap='viridis', alpha=0.6)
             axes[1, 2].set_title('RGB 색상 공간 (R vs G, B는 색상)')
             axes[1, 2].set_xlabel('Red 값')
             axes[1, 2].set_ylabel('Green 값')
