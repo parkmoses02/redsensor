@@ -4,6 +4,21 @@ import os
 import glob
 from datetime import datetime
 
+import platform
+
+# 한글 폰트 설정
+if platform.system() == 'Windows':
+    plt.rc('font', family='Malgun Gothic')
+elif platform.system() == 'Darwin': # Mac
+    plt.rc('font', family='AppleGothic')
+else: # Linux
+    # For Linux, you may need to install a Korean font like NanumGothic
+    # sudo apt-get install fonts-nanum*
+    plt.rc('font', family='NanumGothic')
+
+# 마이너스 기호 깨짐 방지
+plt.rcParams['axes.unicode_minus'] = False
+
 def analyze_sensor_data(filename=None):
     """
     수집된 센서 데이터를 분석하고 시각화
@@ -13,18 +28,19 @@ def analyze_sensor_data(filename=None):
     """
     
     data_dir = "data"
+    csv_dir = os.path.join(data_dir, "csv_files")
     
     # 파일 선택
     if filename is None:
         # 가장 최신 파일 찾기
-        csv_files = glob.glob(os.path.join(data_dir, "sensor_data_*.csv"))
+        csv_files = glob.glob(os.path.join(csv_dir, "sensor_data_*.csv"))
         if not csv_files:
             print("분석할 데이터 파일이 없습니다.")
             return
         filename = max(csv_files, key=os.path.getctime)
-        print(f"가장 최신 파일을 분석합니다: {filename}")
+        print(f"가장 최신 파일을 분석합니다: {os.path.basename(filename)}")
     else:
-        filename = os.path.join(data_dir, filename)
+        filename = os.path.join(csv_dir, filename)
     
     try:
         # 데이터 읽기
@@ -37,13 +53,12 @@ def analyze_sensor_data(filename=None):
         print(df.columns.tolist())
         
         # 기본 통계
-        print("\n=== 기본 통계 ===")
         numeric_columns = df.select_dtypes(include=['number']).columns
-        print(df[numeric_columns].describe())
+        stats_df = df[numeric_columns].describe().round(1)
         
         # 시각화
-        fig, axes = plt.subplots(2, 3, figsize=(15, 10))
-        fig.suptitle('TCS34725 센서 데이터 분석', fontsize=16)
+        fig, axes = plt.subplots(2, 3, figsize=(18, 10))
+        fig.suptitle('TCS34725 센서 데이터 분석', fontsize=20, y=0.95)
         
         # RGB 값 시간 변화
         if 'R' in df.columns and 'G' in df.columns and 'B' in df.columns:
@@ -91,36 +106,32 @@ def analyze_sensor_data(filename=None):
             axes[1, 1].legend()
             axes[1, 1].grid(True, alpha=0.3)
         
-        # RGB 3D 색상 공간 (간단한 2D 표현)
-        if 'R' in df.columns and 'G' in df.columns and 'B' in df.columns:
-            scatter = axes[1, 2].scatter(df['R'], df['G'], c=df['B'], 
-                                       cmap='viridis', alpha=0.6)
-            axes[1, 2].set_title('RGB 색상 공간 (R vs G, B는 색상)')
-            axes[1, 2].set_xlabel('Red 값')
-            axes[1, 2].set_ylabel('Green 값')
-            plt.colorbar(scatter, ax=axes[1, 2], label='Blue 값')
-            axes[1, 2].grid(True, alpha=0.3)
+        # 기본 통계 테이블
+        ax_table = axes[1, 2]
+        ax_table.axis('off')
+        ax_table.set_title('기본 통계 요약', y=0.9)
         
-        plt.tight_layout()
-        
-        # 그래프 저장
-        plot_filename = filename.replace('.csv', '_analysis.png')
-        plt.savefig(plot_filename, dpi=300, bbox_inches='tight')
-        print(f"\n분석 그래프 저장: {plot_filename}")
-        
-        plt.show()
+        # 표시할 통계 선택
+        stats_to_show = stats_df.loc[['mean', 'std', 'min', 'max']].rename(index={'mean': '평균', 'std': '표준편차', 'min': '최소', 'max': '최대'})
+
+        table = ax_table.table(cellText=stats_to_show.values,
+                            rowLabels=stats_to_show.index,
+                            colLabels=stats_to_show.columns,
+                            loc='center',
+                            cellLoc='center')
+        table.auto_set_font_size(False)
+        table.set_fontsize(8)
+        table.scale(1, 1.8)
+        ax_table.grid(False)
         
         # 색상 변화 감지
+        analysis_text = ""
         if 'R' in df.columns and 'G' in df.columns and 'B' in df.columns:
-            print("\n=== 색상 변화 분석 ===")
-            
-            # RGB 평균값
+            # ... (색상 분석 로직은 그대로)
             avg_r = df['R'].mean()
             avg_g = df['G'].mean()
             avg_b = df['B'].mean()
-            print(f"평균 RGB: ({avg_r:.1f}, {avg_g:.1f}, {avg_b:.1f})")
             
-            # 주요 색상 판단
             if avg_r > avg_g and avg_r > avg_b:
                 dominant_color = "빨간색"
             elif avg_g > avg_r and avg_g > avg_b:
@@ -130,19 +141,36 @@ def analyze_sensor_data(filename=None):
             else:
                 dominant_color = "중성색"
             
-            print(f"주요 감지 색상: {dominant_color}")
-            
-            # 색상 변화량
             rgb_std = (df['R'].std() + df['G'].std() + df['B'].std()) / 3
-            print(f"색상 변화량 (표준편차 평균): {rgb_std:.1f}")
             
+            stability = "색상 변화가 큽니다."
             if rgb_std < 10:
-                print("색상이 매우 안정적입니다.")
+                stability = "색상이 매우 안정적입니다."
             elif rgb_std < 25:
-                print("색상이 비교적 안정적입니다.")
-            else:
-                print("색상 변화가 큽니다.")
+                stability = "색상이 비교적 안정적입니다."
+
+            analysis_text = (
+                f"평균 RGB: ({avg_r:.1f}, {avg_g:.1f}, {avg_b:.1f})\n"
+                f"색상 변화량 (표준편차 평균): {rgb_std:.1f}"
+            )
+            print("\n" + analysis_text)
+
+            # 분석 텍스트를 테이블 아래에 추가
+            fig.text(0.83, 0.08, analysis_text, ha="center", fontsize=12,
+                    bbox={"facecolor":"white", "alpha":0.5, "pad":5})
+
+        plt.tight_layout(rect=[0, 0, 1, 0.95]) # 레이아웃 조정
         
+        # 그래프 저장
+        plot_dir = os.path.join(data_dir, "plots")
+        os.makedirs(plot_dir, exist_ok=True)
+        base_filename = os.path.basename(filename)
+        plot_filename = os.path.join(plot_dir, base_filename.replace('.csv', '_analysis.png'))
+        plt.savefig(plot_filename, dpi=300, bbox_inches='tight')
+        print(f"\n분석 그래프 저장: {plot_filename}")
+        
+        plt.show()
+
     except Exception as e:
         print(f"분석 중 오류 발생: {e}")
 
