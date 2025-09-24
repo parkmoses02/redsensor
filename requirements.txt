@@ -1,3 +1,7 @@
 pyserial
 pandas
 matplotlib
+# Color sensor Python libraries
+adafruit-circuitpython-tcs34725>=3.3.0
+colorspacious>=1.1.2
+numpy>=1.21.0
