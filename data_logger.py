@@ -62,7 +62,7 @@ def collect_sensor_data(port='COM5', baudrate=9600, duration=30, filename=None):
                     
                     # 시리얼 데이터 읽기
                     if ser.in_waiting > 0:
-                        line = ser.readline().decode('utf-8').strip()
+                        line = ser.readline().decode('utf-8', errors='ignore').strip()
                         
                         if line:
                             print(f"수신: {line}")
