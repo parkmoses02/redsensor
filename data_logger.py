@@ -62,7 +62,14 @@ def collect_sensor_data(port='COM5', baudrate=9600, duration=30, filename=None):
                     
                     # 시리얼 데이터 읽기
                     if ser.in_waiting > 0:
-                        line = ser.readline().decode('utf-8', errors='ignore').strip()
+                        # 간단하고 안전한 디코딩 방식
+                        try:
+                            raw_data = ser.readline()
+                            # latin-1이 가장 호환성이 좋음 (모든 바이트 값을 허용)
+                            line = raw_data.decode('latin-1', errors='replace').strip()
+                        except Exception as e:
+                            print(f"데이터 읽기 오류: {e}")
+                            continue
                         
                         if line:
                             print(f"수신: {line}")
