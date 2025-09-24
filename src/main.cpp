@@ -5,7 +5,7 @@
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_154MS, TCS34725_GAIN_4X);
 
 void setup() {
-  Serial.begin(115200); // 통신 속도를 115200으로 변경
+  Serial.begin(96000); // 통신 속도를 96000으로 변경
 
   if (tcs.begin()) {
     Serial.println("Sensor found. Starting data transmission...");
