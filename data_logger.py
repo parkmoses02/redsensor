@@ -3,6 +3,7 @@ import csv
 import datetime
 import time
 import os
+import re
 
 def collect_sensor_data(port='COM6', baudrate=9600, duration=30, filename=None):
     """
@@ -19,6 +20,11 @@ def collect_sensor_data(port='COM6', baudrate=9600, duration=30, filename=None):
     if filename is None:
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"sensor_data_{timestamp}.csv"
+    
+    # 파일명에서 안전하지 않은 문자들 제거
+    filename = re.sub(r'[<>:"/\\|?*&]', '_', filename)
+    if not filename.endswith('.csv'):
+        filename = filename + '.csv'
     
     # data 폴더 및 하위 폴더 생성
     data_dir = "data"
