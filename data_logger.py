@@ -20,12 +20,12 @@ def collect_sensor_data(port='COM5', baudrate=9600, duration=30, filename=None):
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"sensor_data_{timestamp}.csv"
     
-    # data 폴더 생성
+    # data 폴더 및 하위 폴더 생성
     data_dir = "data"
-    if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
+    csv_dir = os.path.join(data_dir, "csv_files")
+    os.makedirs(csv_dir, exist_ok=True)
     
-    filepath = os.path.join(data_dir, filename)
+    filepath = os.path.join(csv_dir, filename)
     
     try:
         # 시리얼 포트 연결
