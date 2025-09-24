@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import glob
-from datetime import datetime2
+from datetime import datetime
 
 import platform
 
