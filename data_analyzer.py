@@ -2,7 +2,22 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 import glob
-from datetime import datetime
+from datetime import datetime2
+
+import platform
+
+# 한글 폰트 설정
+if platform.system() == 'Windows':
+    plt.rc('font', family='Malgun Gothic')
+elif platform.system() == 'Darwin': # Mac
+    plt.rc('font', family='AppleGothic')
+else: # Linux
+    # For Linux, you may need to install a Korean font like NanumGothic
+    # sudo apt-get install fonts-nanum*
+    plt.rc('font', family='NanumGothic')
+
+# 마이너스 기호 깨짐 방지
+plt.rcParams['axes.unicode_minus'] = False
 
 def analyze_sensor_data(filename=None):
     """
