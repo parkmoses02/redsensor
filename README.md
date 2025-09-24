@@ -101,7 +101,7 @@ Windows가 아닌 경우 포트를 변경해야 할 수 있습니다:
 
 ```python
 # data_logger.py의 기본 포트 변경
-collect_sensor_data(port='COM3')      # Windows
+collect_sensor_data(port='COM4')      # Windows
 collect_sensor_data(port='/dev/ttyUSB0')   # Linux
 collect_sensor_data(port='/dev/cu.usbmodem*')  # macOS
 ```
@@ -123,7 +123,7 @@ collect_sensor_data(port='/dev/cu.usbmodem*')  # macOS
 
 #### "포트를 열 수 없습니다" 오류
 ```
-PermissionError: could not open port 'COM3'
+PermissionError: could not open port 'COM4'
 ```
 **해결방법:**
 1. 다른 프로그램(Arduino IDE, PlatformIO 모니터)에서 같은 포트를 사용 중인지 확인
@@ -422,7 +422,7 @@ void loop() {
 ### 업로드 포트 오류
 ```ini
 ; platformio.ini에 본인의 포트 추가
-upload_port = COM3  ; Windows
+upload_port = COM4  ; Windows
 ; upload_port = /dev/ttyUSB0  ; Linux
 ; upload_port = /dev/cu.usbmodem*  ; macOS
 ```

@@ -30,15 +30,15 @@
 
 2.  **업로드/모니터 포트 지정 (`upload_port` / `monitor_port`)**:
     *   PlatformIO는 대부분의 경우 COM 포트를 자동으로 감지하지만, 실패하는 경우도 있습니다.
-    *   장치 관리자에서 확인한 COM 포트 번호(예: `COM3`)를 `platformio.ini` 파일에 직접 명시해 줄 수 있습니다.
+    *   장치 관리자에서 확인한 COM 포트 번호(예: `COM4`)를 `platformio.ini` 파일에 직접 명시해 줄 수 있습니다.
 
     ```ini
     [env:uno]
     platform = atmelavr
     board = uno
     framework = arduino
-    upload_port = COM3
-    monitor_port = COM3
+    upload_port = COM4
+    monitor_port = COM4
     ```
 
 ## 3. 방화벽 또는 다른 프로그램의 포트 점유
