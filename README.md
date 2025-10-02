@@ -34,6 +34,24 @@ redsensor/
     └── sensor_data_YYYYMMDD_HHMMSS_analysis.png
 ```
 
+## 🔧 문제 해결 가이드
+
+### UTF-8 디코드 에러 해결
+일부 Arduino Uno 보드에서 UTF-8 디코드 에러가 발생할 수 있습니다.
+
+#### 간단한 해결책
+1. **시리얼 포트 번호만 변경**: `data_logger.py` 실행 시 오류가 나면:
+   ```python
+   collect_sensor_data(port='COM3')  # 또는 COM4, COM6 등
+   ```
+
+2. **장치 관리자에서 포트 확인**: 
+   - Windows 키 + X → 장치 관리자
+   - 포트(COM 및 LPT) 확인
+   - Arduino Uno가 연결된 COM 번호 사용
+
+**💡 팁**: 대부분의 경우 포트 번호만 바꿔주면 해결됩니다!
+
 ### 🚀 사용 방법
 
 #### 1️⃣ 아두이노 업로드
