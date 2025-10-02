@@ -4,14 +4,14 @@ import datetime
 import time
 import os
 
-def collect_sensor_data(port='COM3', baudrate=115200, duration=60, filename=None):
+def collect_sensor_data(port='COM5', baudrate=9600, duration=30, filename=None):
     """
     아두이노에서 센서 데이터를 수집하여 CSV 파일로 저장
     
     Args:
-        port (str): 시리얼 포트 (기본값: COM3)
-        baudrate (int): 보드레이트 (기본값: 115200)
-        duration (int): 수집 시간(초) (기본값: 60초, 0이면 무한히 수집)
+        port (str): 시리얼 포트 (기본값: COM5)
+        baudrate (int): 보드레이트 (기본값: 9600)
+        duration (int): 수집 시간(초) (기본값: 30초, 0이면 무한히 수집)
         filename (str): 저장할 파일명 (기본값: 현재 시간 기준 자동 생성)
     """
     
@@ -20,12 +20,12 @@ def collect_sensor_data(port='COM3', baudrate=115200, duration=60, filename=None
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"sensor_data_{timestamp}.csv"
     
-    # data 폴더 생성
+    # data 폴더 및 하위 폴더 생성
     data_dir = "data"
-    if not os.path.exists(data_dir):
-        os.makedirs(data_dir)
+    csv_dir = os.path.join(data_dir, "csv_files")
+    os.makedirs(csv_dir, exist_ok=True)
     
-    filepath = os.path.join(data_dir, filename)
+    filepath = os.path.join(csv_dir, filename)
     
     try:
         # 시리얼 포트 연결
@@ -62,7 +62,14 @@ def collect_sensor_data(port='COM3', baudrate=115200, duration=60, filename=None
                     
                     # 시리얼 데이터 읽기
                     if ser.in_waiting > 0:
-                        line = ser.readline().decode('utf-8').strip()
+                        # 간단하고 안전한 디코딩 방식
+                        try:
+                            raw_data = ser.readline()
+                            # latin-1이 가장 호환성이 좋음 (모든 바이트 값을 허용)
+                            line = raw_data.decode('latin-1', errors='replace').strip()
+                        except Exception as e:
+                            print(f"데이터 읽기 오류: {e}")
+                            continue
                         
                         if line:
                             print(f"수신: {line}")
@@ -109,22 +116,30 @@ def collect_sensor_data(port='COM3', baudrate=115200, duration=60, filename=None
 if __name__ == "__main__":
     # 사용 예시
     print("=== TCS34725 센서 데이터 수집기 ===")
-    print("1. 60초 동안 수집")
+    
+    # 파일명 입력 받기
+    custom_filename = input("저장할 파일명을 입력하세요 (확장자 없이, 비워두면 자동 생성): ").strip()
+    if custom_filename:
+        filename = f"{custom_filename}.csv"
+    else:
+        filename = None
+
+    print("1. 30초 동안 수집")
     print("2. 사용자 정의 시간")
     print("3. 무한 수집 (Ctrl+C로 중지)")
     
     choice = input("선택하세요 (1-3): ").strip()
     
     if choice == "1":
-        collect_sensor_data(duration=60)
+        collect_sensor_data(duration=30, filename=filename)
     elif choice == "2":
         try:
             duration = int(input("수집 시간(초)을 입력하세요: "))
-            collect_sensor_data(duration=duration)
+            collect_sensor_data(duration=duration, filename=filename)
         except ValueError:
             print("올바른 숫자를 입력하세요.")
     elif choice == "3":
-        collect_sensor_data(duration=0)
+        collect_sensor_data(duration=0, filename=filename)
     else:
-        print("기본값으로 60초 수집을 시작합니다.")
-        collect_sensor_data(duration=60)
+        print("기본값으로 30초 수집을 시작합니다.")
+        collect_sensor_data(duration=30, filename=filename)
