@@ -4,12 +4,12 @@ import datetime
 import time
 import os
 
-def collect_sensor_data(port='COM5', baudrate=9600, duration=30, filename=None):
+def collect_sensor_data(port='com5', baudrate=9600, duration=30, filename=None):
     """
     아두이노에서 센서 데이터를 수집하여 CSV 파일로 저장
     
     Args:
-        port (str): 시리얼 포트 (기본값: COM5)
+        port (str): 시리얼 포트 (기본값: com5)
         baudrate (int): 보드레이트 (기본값: 9600)
         duration (int): 수집 시간(초) (기본값: 30초, 0이면 무한히 수집)
         filename (str): 저장할 파일명 (기본값: 현재 시간 기준 자동 생성)
@@ -20,12 +20,22 @@ def collect_sensor_data(port='COM5', baudrate=9600, duration=30, filename=None):
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"sensor_data_{timestamp}.csv"
     
+    # 파일명이 .csv로 끝나지 않으면 추가
+    if not filename.endswith('.csv'):
+        filename = f"{filename}.csv"
+    
+    # 파일명에서 경로 구분자와 특수 문자 제거
+    filename = os.path.basename(filename)
+    filename = "".join(c for c in filename if c.isalnum() or c in '._-')
+    
     # data 폴더 및 하위 폴더 생성
     data_dir = "data"
     csv_dir = os.path.join(data_dir, "csv_files")
     os.makedirs(csv_dir, exist_ok=True)
     
     filepath = os.path.join(csv_dir, filename)
+    
+    print(f"파일 저장 위치: {os.path.abspath(filepath)}")
     
     try:
         # 시리얼 포트 연결
@@ -112,8 +122,16 @@ if __name__ == "__main__":
     
     # 파일명 입력 받기
     custom_filename = input("저장할 파일명을 입력하세요 (확장자 없이, 비워두면 자동 생성): ").strip()
+    
+    # 파일명 검증 및 정리
     if custom_filename:
-        filename = f"{custom_filename}.csv"
+        # 특수 문자 제거 및 안전한 파일명으로 변환
+        safe_filename = "".join(c for c in custom_filename if c.isalnum() or c in '_-')
+        if safe_filename:
+            filename = f"{safe_filename}.csv"
+        else:
+            print("유효하지 않은 파일명입니다. 자동 생성합니다.")
+            filename = None
     else:
         filename = None
 
